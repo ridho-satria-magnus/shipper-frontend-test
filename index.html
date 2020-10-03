@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, user-scalable=0, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<title>Driver Management - Shipper</title>
+	<meta name="theme-color" content="#FFFFFF" />
+	<link rel="stylesheet" href="assets/css/style.css">
+	<link rel="icon" href="assets/img/shipper-favicon.png" type="image/x-icon" />
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+</head>
+<body>
+	<!-- Header -->
+	<div class="header dflex align-center justify-between px-15">
+		<img src="assets/img/shipperLogo.png" loading="lazy" alt="shipper logo">
+		<div class="user-info dflex align-center p-15 text-med">
+			Hello, <span class="text-primary">Shipper User</span> <i class="icon-user icon-small ml-15"></i>
+		</div>
+	</div>
+	
+	<div class="dflex">
+		<!-- Left Menu Navigation -->
+		<div class="left-menu">
+			<a href="" class="text-med"><i class="icon"></i>Beranda</a>
+			<a href="" class="text-med active"><i class="icon"></i>Driver Management</a>
+			<a href="" class="text-med"><i class="icon"></i>Pickup</a>
+		</div>
+		
+		<!-- Body Container -->
+		<div class="body-container">
+		
+			<!-- Driver Management Container -->
+			<div class="driver-management">
+				<div class="driver-top dflex align-center justify-between">
+					<div class="driver-top-left">
+						<h2>DRIVER MANAGEMENT</h2>
+						<span class="text-med">Data driver yang bekerja dengan Anda.</span>
+					</div>
+					<div class="driver-top-right dflex">
+						<div class="input-with-icon">
+							<i class="icon"></i>
+							<input type="text" placeholder="Cari Driver" name="driver-name">
+						</div>
+						<button type="button" class="button button-with-icon ml-15">
+							TAMBAH DRIVER <i class="icon-close"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+			
+			<!--Render Driver List here-->
+			<div id="driver-list">
+
+			</div>
+			
+			<!--Pagination Button Here-->
+			<div class="driver-list-pagination dflex" id="driver-list-pagination"></div>
+		</div>
+	</div>
+
+	<!-- Load React. -->
+	<script src="assets/react-dev-tools/babel.min.js"></script>
+	<script src="assets/react-dev-tools/react-dev.js"></script>
+	<script src="assets/react-dev-tools/react-dom-dev.js"></script>
+</body>
+</html>

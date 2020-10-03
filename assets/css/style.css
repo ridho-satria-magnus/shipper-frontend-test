@@ -1,0 +1,214 @@
+:root {
+  --main-color: #ff453b;
+  --dim-color: #B3B3B3;
+  --header-height:70px;
+  --text-size-med:0.85em;
+  --text-size-sm:0.65em;
+}
+html, body {
+	margin:0px;
+	padding:0px;
+	font-family: Montserrat, sans-serif;
+}
+* {
+    box-sizing: border-box;
+}
+button, a {
+	user-select: none;
+	cursor: pointer;
+}
+/*General Style*/
+.text-primary {
+	color: var(--main-color); 
+}
+.text-dim {
+	color: var(--dim-color); 
+}
+.text-med {
+	font-size:var(--text-size-med);
+}
+.text-center {
+	text-align: center;
+}
+.bg-white {
+	background-color:white;
+}
+.dflex {
+	display:flex;
+}
+.align-center {
+	align-items: center;
+}
+.justify-between {
+	justify-content: space-between;
+}
+.p-15 {
+	padding:15px;
+}
+.px-15 {
+	padding-left:15px;
+	padding-right:15px;
+}
+.pl-15 {
+	padding-left:15px;
+}
+.ml-15 {
+	margin-left:15px;
+}
+.mr-15 {
+	margin-right:15px;
+}
+.ml-7 {
+	margin-left:7px;
+}
+.mr-7 {
+	margin-right:7px;
+}
+.rotate-90 {
+	transform: rotate(90deg);
+	display:block;
+}
+
+/*Header*/
+.header {
+	height:var(--header-height);
+}
+.header img {
+	width: 127px;
+	height:auto;
+}
+.user-info span {
+	margin-left:5px;
+}
+
+
+/*Left menu navigation*/
+.left-menu {
+	width:230px;
+	height:calc(100vh - var(--header-height));
+	overflow-y:auto;
+}
+.left-menu a {
+	padding:15px 20px;
+	display: block;
+	text-decoration: unset;
+	color: black;
+}
+.left-menu a.active {
+	color:var(--main-color);
+	position: relative;
+}
+.left-menu a.active:before {
+	content: '';
+	display: block;
+	height: 70%;
+	width: 5px;
+	background-color: var(--main-color);
+	position: absolute;
+	top: 50%;
+	left: 0;
+	transform: translateY(-50%);
+}
+
+/* Body Container */
+.body-container {
+	background-color:#FAFAFA;
+	height:calc(100vh - var(--header-height));
+	width:calc(100vw - 230px);
+	overflow-y:auto;
+}
+
+
+/* Driver Management */
+.driver-management {
+	padding:30px 30px 15px;
+}
+.driver-top {
+	padding:15px 25px;
+	background-color:white;
+}
+.driver-top-left h2 {
+	margin:unset;
+	color: var(--main-color);
+}
+.button {
+	background-color: var(--main-color);
+	border: 1px solid #f00;
+	height: 40px;
+	padding-left: 20px;
+	padding-right: 20px;
+	border-radius: 2px;
+	color: white;
+}
+
+/* Driver List */
+.driver-list-container {
+	padding:15px;
+	overflow-x: auto;
+}
+.driver-col {
+	width:25%;
+	font-size:var(--text-size-med);
+}
+.driver-card-top {
+	border-bottom:1px solid #ececec;
+}
+.driver-card-top button {
+	border: unset;
+	cursor: pointer;
+	background-color: unset;
+	font-size: large;
+	color:var(--dim-color);
+}
+.driver-attribute {
+	margin-top:15px;
+}
+.driver-attribute label {
+	color:var(--dim-color);
+	font-size:var(--text-size-sm);
+}
+.driver-attribute p {
+	margin:0px;
+	margin-top: 5px;
+}
+
+/* Driver List Pagination*/
+.driver-list-pagination {
+	padding:15px 30px;
+	justify-content:center;
+	font-size:var(--text-size-med);
+}
+.paginate-button {
+	color:black;
+	text-decoration:unset;
+	padding:7px 15px;
+	text-align:center;
+}
+.paginate-button.disabled {
+	color:var(--dim-color);
+	cursor:default;
+	pointer-events: none;
+}
+
+/*Icon & Image*/
+.img-user {
+	border-radius: 50%;
+}
+.icon-user {
+	background-image:url(../img/user-icon.png);
+	background-position:center;
+	background-repeat:no-repeat;
+	display: block;
+	background-size: 100%;
+}
+.icon-small {
+	width: 40px;
+	height: 40px;
+}
+.icon-med, .img-user {
+	width: 70px;
+	height: 70px;
+}
+.icon-close {
+	content:"\2715";
+}
