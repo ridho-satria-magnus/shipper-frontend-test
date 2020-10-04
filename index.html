@@ -12,19 +12,16 @@
 <body>
 	<!-- Header -->
 	<div class="header dflex align-center justify-between px-15">
+		<button class="mobile-nav-trigger show-mobile mr-15" onClick="LeftMenuNavigation();">&#9776;</button>
 		<img src="assets/img/shipperLogo.png" loading="lazy" alt="shipper logo">
 		<div class="user-info dflex align-center p-15 text-med">
-			Hello, <span class="text-primary">Shipper User</span> <i class="icon-user icon-small ml-15"></i>
+			<span class="show-desktop">Hello, <span class="text-primary">Shipper User</span></span> <i class="icon-user icon-small ml-15"></i>
 		</div>
 	</div>
 	
 	<div class="dflex">
 		<!-- Left Menu Navigation -->
-		<div class="left-menu show-desktop">
-			<a href="" class="text-med"><i class="icon"></i>Beranda</a>
-			<a href="" class="text-med active"><i class="icon"></i>Driver Management</a>
-			<a href="" class="text-med"><i class="icon"></i>Pickup</a>
-		</div>
+		<div id="left-menu-container"></div>
 		
 		<!-- Body Container -->
 		<div class="body-container">
@@ -63,6 +60,24 @@
 
 	<!-- Load React component. -->
 	<script type="text/jsx">
+
+		//small function for hide and show navigation when mobile
+		let isOpen = window.innerWidth < 768 ? true : false;
+		function LeftMenuNavigation(){
+			const defaultClass = 'left-menu bg-white';
+			isOpen = !isOpen;
+			const element = (
+				<div className={isOpen ? defaultClass + ' open' : defaultClass}>
+					<a className="text-med">Beranda</a>
+					<a className="text-med active">Driver Management</a>
+					<a className="text-med">Pickup</a>
+				</div>
+			)
+			ReactDOM.render(element, document.getElementById('left-menu-container'));
+		}
+		LeftMenuNavigation();
+
+
 		{/*class GetData extends React.Component {
 			constructor(props){
 				super(props);
