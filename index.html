@@ -99,7 +99,8 @@
 							error
 						})
 					}
-				)
+				);
+				this.props.onRef(this);
 			}
 
 			setPaginationData(){
@@ -158,12 +159,25 @@
 				return (new Date(dateString).toJSON().slice(0,10).split('-').reverse().join('-'))
 			}
 
+			changeProps(currentPage, itemPerRequest){
+				this.setState({
+					currentPage:currentPage,
+					itemPerRequest:itemPerRequest
+				}, function () {
+					this.setPaginationData();
+				});
+			}
+
 			render(){
 				const {error,isLoaded,currentItems} = this.state;
 				if(error){
 					return <div className="text-center">Error: {error.message}</div>;
 				} else if(!isLoaded){
-					return <div className="text-center">Loading...</div>;
+					return (
+						<div className="dflex driver-list-container">
+							<div className="text-center">Loading...</div>
+						</div>
+					)
 				} else {
 					return (
 						<div className="dflex driver-list-container">
@@ -181,6 +195,12 @@
 					)
 				}
 			}
+		}
+
+		class EnhancedChild extends React.Component {
+			render() {
+		    	return <GetData {...this.props} />
+		  	}
 		}
 
 
@@ -226,12 +246,14 @@
 						isLast:false
 					});
 				}
+				this.getData.changeProps(this.state.currentPage,this.state.itemPerRequest);
 			}
 
 			render(){
 				return (
 					<div>
-						<GetData currentPage={this.state.currentPage} itemPerRequest={this.state.itemPerRequest} />
+						{/*<GetData currentPage={this.state.currentPage} itemPerRequest={this.state.itemPerRequest} />*/}
+						<EnhancedChild currentPage={this.state.currentPage} itemPerRequest={this.state.itemPerRequest} onRef={ref => (this.getData = ref)}/>
 						<div className="driver-list-pagination dflex" id="driver-list-pagination">
 							<a className={this.state.isFirst?'paginate-button disabled':'paginate-button'} onClick={() => this.getAjaxData('prev')}>
 								<span className="mr-7">&#10094;</span> 
@@ -249,6 +271,10 @@
 		ReactDOM.render(
 		   <ManagePagination />, driverListElement
 	 	);
+
+	 	class SearchDriver extends React.Component {
+
+	 	}
 	</script>
 </body>
 </html>
