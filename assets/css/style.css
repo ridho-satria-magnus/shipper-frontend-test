@@ -45,8 +45,14 @@ button, a {
 .justify-between {
 	justify-content: space-between;
 }
+.justify-center {
+	justify-content: center;
+}
 .p-15 {
 	padding:15px;
+}
+.p-30 {
+	padding:30px;
 }
 .px-15 {
 	padding-left:15px;
@@ -198,6 +204,10 @@ button, a {
 	margin:0px;
 	margin-top: 5px;
 }
+.card-driver-empty {
+	height: 20vh;
+	width:100%;
+}
 
 /* Driver List Pagination*/
 .driver-list-pagination {
@@ -348,6 +358,7 @@ button, a {
 	}
 	.button {
 		margin-left: unset;
+		margin-top: 5px;
 		width:100%;
 	}
 }

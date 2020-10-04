@@ -242,11 +242,12 @@
 					currentPage:1,
 					isFirst:true,
 					isLast:false,
+					dataExist:true,
 
 					//state for search input
 					search:null,
 				    typingTimeout: 0,
-				    typingStop:500,
+				    typingStop:250,
 
 				    //state for item driver list
 				    error:null,
@@ -254,6 +255,20 @@
 					items:[],
 					currentItems:[],
 				}
+			}
+
+			readParameter(){
+				var url = new URL(window.location.href);
+				var currentPageParams = url.searchParams.get("currentPage");
+				var searchParams = url.searchParams.get("search") == 'null' ? null : url.searchParams.get("search");
+				this.setState({currentPage: parseInt(currentPageParams),search: searchParams}, function () {
+				    this.setPaginationData();
+				});
+			}
+			setParameterUrl(){
+				const title = '';
+				const url = 'index.html?currentPage='+this.state.currentPage+'&search='+this.state.search;
+				window.history.pushState({}, title, url);
 			}
 
 			//handle search when user typing on input search
@@ -264,13 +279,14 @@
 			       clearTimeout(this.state.typingTimeout);
 			    }
 			    this.setState({
-			       typingTimeout: setTimeout(function () {
+			       	typingTimeout: setTimeout(function () {
 			       		//start search after user stop typing state.typingStop to minimize function call
 			       		const searchValue = target.value == '' ? null : target.value;
-			       		self.setState({currentPage: 1,search: searchValue,maxLoad:1}, function () {
+			       		self.setState({currentPage: 1,search: searchValue,maxLoad:1,dataExist:true}, function () {
 						    self.setPaginationData();
+						    self.setParameterUrl();
 						});
-			         }, this.state.typingStop)
+			        }, this.state.typingStop)
 			    });
 	 		}
 			//create function for bind click button pagination to navigate driver list shown
@@ -279,17 +295,19 @@
 					this.setState({currentPage: this.state.currentPage - 1}, function () {
 					    this.checkPaginationButton();
 					    this.setPaginationData();
+					    this.setParameterUrl();
 					});
 				} else if (type == 'next'){
 					this.setState({currentPage: this.state.currentPage + 1}, function () {
 					    this.checkPaginationButton();
 					    this.setPaginationData();
+					    this.setParameterUrl();
 					});
 				}
 			}
 			//create new function for check pagination so we can call easily
 			checkPaginationButton(){
-				if(this.state.currentPage == 1 && this.state.currentPage == Math.ceil(this.state.maxLoad / this.state.itemPerRequest)){
+				if(!this.state.dataExist || (this.state.currentPage == 1 && this.state.currentPage == Math.ceil(this.state.maxLoad / this.state.itemPerRequest))){
 					this.setState({
 						isFirst:true,
 						isLast:true
@@ -319,28 +337,39 @@
 				const _state = this.state;
 				if(_state.search == null){
 					const loadTo =_state.currentPage * _state.itemPerRequest;
-					const loadFrom = loadTo - _state.itemPerRequest;
-					for(var i = loadFrom; i < loadTo;i++){
-						tempItem.push(_state.items[i]);
-					}
-					this.setState({maxLoad:_state.items.length}, function(){
-						this.checkPaginationButton();
-					});
+					if(_state.items[loadTo - 1] == undefined){
+						this.setState({dataExist:false}, function(){
+							this.checkPaginationButton();
+						});
+					} else {
+						const loadFrom = loadTo - _state.itemPerRequest;
+						for(var i = loadFrom; i < loadTo;i++){
+							tempItem.push(_state.items[i]);
+						}
+						this.setState({maxLoad:_state.items.length}, function(){
+							this.checkPaginationButton();
+						});
+					}					
 				} else if (_state.search != null){
 					for(var i=0;i<_state.items.length;i++){
 						if(_state.items[i].name.first.toLowerCase() == _state.search.toLowerCase()){
 							tempItem.push(_state.items[i]);
 						}
 					}
-					this.setState({maxLoad:tempItem.length}, function(){
-						this.checkPaginationButton();
-					});
+					if(tempItem.length == 0 || tempItem.length < this.state.currentPage){
+						this.setState({dataExist:false}, function(){
+							this.checkPaginationButton();
+						});
+					} else {
+						this.setState({maxLoad:tempItem.length}, function(){
+							this.checkPaginationButton();
+						});
+					}
 				}
 				this.setState({
 					currentItems:tempItem,
 					isLoaded:true
 				});
-				//console.log(_state.maxLoad + ' currentpage ' + _state.currentPage + ' isFirst '+_state.isFirst + ' isLast '+_state.isLast + ' tempLength' + tempItem.length)
 			}
 
 
@@ -358,7 +387,7 @@
 							maxLoad:result.results.length,
 						}, function(){
 							//call back to setPagination data
-							this.setPaginationData();
+							this.readParameter();
 						});
 					},
 					(error) => {
@@ -384,7 +413,7 @@
 								<div className="input-with-icon mobile-100">
 									<div id="input-with-search">
 										<span className="icon-addon icon-magnifier"></span>
-										<input type="text" placeholder="Cari Driver" onChange={(e) => this.handleSearch(e)} name="driver-name"/>
+										<input type="text" placeholder="Cari Driver" defaultValue={this.state.search} onChange={(e) => this.handleSearch(e)} name="driver-name"/>
 									</div>
 								</div>
 								<button type="button" className="button button-with-icon button-add-driver ml-15 mobile-100">
@@ -444,10 +473,20 @@
 				return (new Date(dateString).toJSON().slice(0,10).split('-').reverse().join('-'))
 			}
 	 		renderCard(){
-	 			const {error,isLoaded,currentItems} = this.state;
+	 			const {error,isLoaded,currentItems,dataExist} = this.state;
 				if(error){
 					return <div className="text-center">Error: {error.message}</div>;
-				} else if(!isLoaded){
+				} 
+				else if(!dataExist){
+					return (
+						<div class="w-100 p-30">
+							<div class="card-driver-empty bg-white  dflex justify-center align-center text-med">
+							  	Data Tidak Di temukan
+						  	</div>
+						</div>
+					)
+				}
+				else if(!isLoaded){
 					return (
 						<div className="dflex driver-list-container">
 							<div className="text-center">Loading...</div>
@@ -470,7 +509,6 @@
 					)
 				}
 	 		}
-
 
 	 		//final render
 			render(){
