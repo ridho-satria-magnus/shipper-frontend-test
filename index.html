@@ -20,7 +20,7 @@
 	
 	<div class="dflex">
 		<!-- Left Menu Navigation -->
-		<div class="left-menu">
+		<div class="left-menu show-desktop">
 			<a href="" class="text-med"><i class="icon"></i>Beranda</a>
 			<a href="" class="text-med active"><i class="icon"></i>Driver Management</a>
 			<a href="" class="text-med"><i class="icon"></i>Pickup</a>
@@ -30,7 +30,7 @@
 		<div class="body-container">
 		
 			<!-- Driver Management Container -->
-			<div class="driver-management">
+			<!--<div class="driver-management">
 				<div class="driver-top dflex align-center justify-between">
 					<div class="driver-top-left">
 						<h2>DRIVER MANAGEMENT</h2>
@@ -39,22 +39,20 @@
 					<div class="driver-top-right dflex">
 						<div class="input-with-icon">
 							<i class="icon"></i>
-							<input type="text" placeholder="Cari Driver" name="driver-name">
+							<div id="input-with-search">
+								<input type="text" placeholder="Cari Driver" name="driver-name">
+							</div>
 						</div>
 						<button type="button" class="button button-with-icon ml-15">
 							TAMBAH DRIVER <i class="icon-close"></i>
 						</button>
 					</div>
 				</div>
-			</div>
+			</div>-->
 			
 			<!--Render Driver List here-->
-			<div id="driver-list">
-
-			</div>
-			
-			<!--Pagination Button Here-->
-			<div class="driver-list-pagination dflex" id="driver-list-pagination"></div>
+			<div id="driver-list"></div>
+		
 		</div>
 	</div>
 
@@ -62,12 +60,10 @@
 	<script src="assets/react-dev-tools/babel.min.js"></script>
 	<script src="assets/react-dev-tools/react-dev.js"></script>
 	<script src="assets/react-dev-tools/react-dom-dev.js"></script>
-	<!-- <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script> -->
+
 	<!-- Load React component. -->
-	<!-- <script type="text/jsx" src="assets/js/driverList.js" crossorigin></script> -->
 	<script type="text/jsx">
-		const driverListElement = document.getElementById('driver-list');
-		class GetData extends React.Component {
+		{/*class GetData extends React.Component {
 			constructor(props){
 				super(props);
 				this.state = {
@@ -76,20 +72,24 @@
 					items:[],
 					currentItems:[],
 					currentPage: props.currentPage,
-					itemPerRequest: props.itemPerRequest
+					itemPerRequest: props.itemPerRequest,
+					currentSearch:props.search
 				}
 			}
 
+			//get file json on fetch
 			componentDidMount(){
 				//fetch("https://randomuser.me/api/?page=1&results=5&nat=us")
 				fetch("assets/json/randomuser.me.json")
 				.then(res => res.json())
 				.then(
 					(result) => {
+						//if success then set result to state
 						this.setState({
-							isLoaded:true,
+							isLoaded:false,
 							items:result.results
 						}, function(){
+							//call back to setPagination data
 							this.setPaginationData();
 						});
 					},
@@ -103,20 +103,41 @@
 				this.props.onRef(this);
 			}
 
+			//create function to manage which data to show
 			setPaginationData(){
-				const loadTo = this.state.currentPage * this.state.itemPerRequest;
-				const loadFrom = loadTo - this.state.itemPerRequest;
-				console.log(loadFrom);
-				console.log(loadTo);
 				var tempItem = [];
-				for(var i = loadFrom; i < loadTo;i++){
-					tempItem.push(this.state.items[i]);
+				const _state = this.state;
+				if(_state.currentSearch == null){
+					const loadTo =_state.currentPage * _state.itemPerRequest;
+					const loadFrom = loadTo - _state.itemPerRequest;
+					for(var i = loadFrom; i < loadTo;i++){
+						tempItem.push(_state.items[i]);
+					}
+				} else {
+					for(var i=0;i<_state.items.length;i++){
+						console.log(_state.items[i].name.first.toLowerCase() + ' keywords ' +_state.currentSearch.toLowerCase());
+						if(_state.items[i].name.first.toLowerCase() == _state.currentSearch.toLowerCase()){
+							tempItem.push(_state.items[i]);
+						}
+					}
 				}
 				this.setState({
-					currentItems:tempItem
+					currentItems:tempItem,
+					isLoaded:true
+				});
+			}
+			//function to change prop and recall setPaginationData to update driver List base on parameter
+			changeProps(currentPage, itemPerRequest, search){
+				this.setState({
+					currentPage:currentPage,
+					itemPerRequest:itemPerRequest,
+					currentSearch:search
+				}, function () {
+					this.setPaginationData();
 				});
 			}
 
+			//create card driver in top section
 			createCardTopSection(item){
 				return (
 					<div className="driver-card-top p-15 dflex justify-between align-center">
@@ -132,6 +153,7 @@
 					</div>
 				)
 			}
+			//create card driver in body section
 			createCardBodySection(item){
 				return(
 					<div className="driver-body p-15" key={item.login.salt}>
@@ -155,17 +177,9 @@
 					</div>
 				)
 			}
+			//format date to DD-MM-YYY
 			formatDate(dateString){
 				return (new Date(dateString).toJSON().slice(0,10).split('-').reverse().join('-'))
-			}
-
-			changeProps(currentPage, itemPerRequest){
-				this.setState({
-					currentPage:currentPage,
-					itemPerRequest:itemPerRequest
-				}, function () {
-					this.setPaginationData();
-				});
 			}
 
 			render(){
@@ -201,35 +215,72 @@
 			render() {
 		    	return <GetData {...this.props} />
 		  	}
-		}
-
+		}*/}
 
 		class ManagePagination extends React.Component {
 			constructor(props){
 				super(props);
 				this.state = {
+					//state for manage pagination
 					maxLoad:30,
 					itemPerRequest:5,
 					currentPage:1,
 					isFirst:true,
 					isLast:false,
+
+					//state for search input
+					search:null,
+				    typingTimeout: 0,
+				    typingStop:500,
+
+				    //state for item driver list
+				    error:null,
+					isLoaded:false,
+					items:[],
+					currentItems:[],
 				}
 			}
 
-			getAjaxData(type){
+			//handle search when user typing on input search
+			handleSearch(e){
+	 			const target = e.target;
+	 			const self = this;
+			    if (this.state.typingTimeout) {
+			       clearTimeout(this.state.typingTimeout);
+			    }
+			    this.setState({
+			       typingTimeout: setTimeout(function () {
+			       		//start search after user stop typing state.typingStop to minimize function call
+			       		const searchValue = target.value == '' ? null : target.value;
+			       		self.setState({currentPage: 1,search: searchValue,maxLoad:1}, function () {
+						    self.setPaginationData();
+						});
+			         }, this.state.typingStop)
+			    });
+	 		}
+			//create function for bind click button pagination to navigate driver list shown
+			bindButtonPagination(type){
 				if(type == 'prev'){
 					this.setState({currentPage: this.state.currentPage - 1}, function () {
-					    this.checkPagination();
+					    this.checkPaginationButton();
+					    this.setPaginationData();
 					});
 				} else if (type == 'next'){
 					this.setState({currentPage: this.state.currentPage + 1}, function () {
-					    this.checkPagination();
+					    this.checkPaginationButton();
+					    this.setPaginationData();
 					});
 				}
 			}
-
-			checkPagination(){
-				if(this.state.currentPage == 1){
+			//create new function for check pagination so we can call easily
+			checkPaginationButton(){
+				if(this.state.currentPage == 1 && this.state.currentPage == Math.ceil(this.state.maxLoad / this.state.itemPerRequest)){
+					this.setState({
+						isFirst:true,
+						isLast:true
+					});
+				}
+				else if(this.state.currentPage == 1){
 					this.setState({
 						isFirst: true,
 						isLast:false
@@ -246,20 +297,178 @@
 						isLast:false
 					});
 				}
-				this.getData.changeProps(this.state.currentPage,this.state.itemPerRequest);
+			}
+			//create function to manage which data to show
+			setPaginationData(){
+				var tempItem = [];
+				const _state = this.state;
+				if(_state.search == null){
+					const loadTo =_state.currentPage * _state.itemPerRequest;
+					const loadFrom = loadTo - _state.itemPerRequest;
+					for(var i = loadFrom; i < loadTo;i++){
+						tempItem.push(_state.items[i]);
+					}
+					this.setState({maxLoad:_state.items.length}, function(){
+						this.checkPaginationButton();
+					});
+				} else if (_state.search != null){
+					for(var i=0;i<_state.items.length;i++){
+						if(_state.items[i].name.first.toLowerCase() == _state.search.toLowerCase()){
+							tempItem.push(_state.items[i]);
+						}
+					}
+					this.setState({maxLoad:tempItem.length}, function(){
+						this.checkPaginationButton();
+					});
+				}
+				this.setState({
+					currentItems:tempItem,
+					isLoaded:true
+				});
+				//console.log(_state.maxLoad + ' currentpage ' + _state.currentPage + ' isFirst '+_state.isFirst + ' isLast '+_state.isLast + ' tempLength' + tempItem.length)
 			}
 
+
+	 		//get file json on fetch
+			componentDidMount(){
+				//fetch("https://randomuser.me/api/?page=1&results=5&nat=us")
+				fetch("assets/json/randomuser.me.json")
+				.then(res => res.json())
+				.then(
+					(result) => {
+						//if success then set result to state
+						this.setState({
+							isLoaded:false,
+							items:result.results,
+							maxLoad:result.results.length,
+						}, function(){
+							//call back to setPagination data
+							this.setPaginationData();
+						});
+					},
+					(error) => {
+						this.setState({
+							isLoaded:true,
+							error
+						})
+					}
+				);
+			}
+	 		
+
+	 		//create html for driver management section like search, button add driver and  title for detail page
+			createSearchSection(){
+				return (
+					<div className="driver-management">
+						<div className="driver-top dflex align-center justify-between">
+							<div className="driver-top-left mobile-100">
+								<h2>DRIVER MANAGEMENT</h2>
+								<span className="text-med">Data driver yang bekerja dengan Anda.</span>
+							</div>
+							<div className="driver-top-right dflex mobile-100 flex-wrap-wrap">
+								<div className="input-with-icon mobile-100">
+									<i className="icon"></i>
+									<div id="input-with-search">
+										<input type="text" placeholder="Cari Driver" onChange={(e) => this.handleSearch(e)} name="driver-name"/>
+									</div>
+								</div>
+								<button type="button" className="button button-with-icon button-add-driver ml-15 mobile-100">
+									TAMBAH DRIVER <i className="icon-close"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+				)
+			}
+	 		//create card driver in top section
+			createCardTopSection(item){
+				return (
+					<div className="driver-card-top p-15 dflex justify-between align-center">
+						<div className="dct-left">
+							<span className="text-dim">Driver ID</span>
+							<span className="text-primary"> {item.login.username}</span>
+						</div>
+						<div className="dct-right">
+							<button type="button">
+								<span className="rotate-90">&#8285;</span>
+							</button>
+						</div>
+					</div>
+				)
+			}
+			//create card driver in body section
+			createCardBodySection(item){
+				return(
+					<div className="driver-body dflex flex-wrap-wrap p-15" key={item.login.salt}>
+						<div className="mobile-50 dflex align-center">
+							<img src={item.picture.thumbnail} loading="lazy" className="img-user"/>
+						</div>
+						<div className="mobile-50">
+							<div className="driver-attribute mt-mobile-0">
+								<label>Nama Driver</label>
+								<p>{item.name.first}, {item.name.last}</p>
+							</div>
+							<div className="driver-attribute">
+								<label>Telepon</label>
+								<p>{item.cell}</p>
+							</div>
+							<div className="driver-attribute show-desktop">
+								<label>Email</label>
+								<p>{item.email}</p>
+							</div>
+							<div className="driver-attribute show-desktop">
+								<label>Tanggal Lahir</label>
+								<p>{this.formatDate(item.dob.date)}</p>
+							</div>
+						</div>
+					</div>
+				)
+			}
+			//format date to DD-MM-YYY
+			formatDate(dateString){
+				return (new Date(dateString).toJSON().slice(0,10).split('-').reverse().join('-'))
+			}
+	 		renderCard(){
+	 			const {error,isLoaded,currentItems} = this.state;
+				if(error){
+					return <div className="text-center">Error: {error.message}</div>;
+				} else if(!isLoaded){
+					return (
+						<div className="dflex driver-list-container">
+							<div className="text-center">Loading...</div>
+						</div>
+					)
+				} else {
+					return (
+						<div className="dflex driver-list-container">
+							{ 
+								currentItems.map(item => (
+									<div className="driver-col p-15" key={item.login.username}>
+										<div className="driver-card bg-white">
+											{this.createCardTopSection(item)}
+											{this.createCardBodySection(item)}
+										</div>
+									</div>
+								)) 
+							}
+						</div>
+					)
+				}
+	 		}
+
+
+	 		//final render
 			render(){
 				return (
 					<div>
-						{/*<GetData currentPage={this.state.currentPage} itemPerRequest={this.state.itemPerRequest} />*/}
-						<EnhancedChild currentPage={this.state.currentPage} itemPerRequest={this.state.itemPerRequest} onRef={ref => (this.getData = ref)}/>
+						{this.createSearchSection()}
+						{this.renderCard()}
 						<div className="driver-list-pagination dflex" id="driver-list-pagination">
-							<a className={this.state.isFirst?'paginate-button disabled':'paginate-button'} onClick={() => this.getAjaxData('prev')}>
+							<a className={this.state.isFirst?'paginate-button disabled':'paginate-button'} onClick={() => this.bindButtonPagination('prev')}>
 								<span className="mr-7">&#10094;</span> 
 								Previous Page
 							</a>
-							<a className={this.state.isLast?'paginate-button disabled':'paginate-button'} onClick={() => this.getAjaxData('next')}>
+							<a className={this.state.isLast?'paginate-button disabled':'paginate-button'} onClick={() => this.bindButtonPagination('next')}>
 								Next Page 
 								<span className="ml-7">&#10095;</span>
 							</a>
@@ -269,12 +478,8 @@
 			}
 		}
 		ReactDOM.render(
-		   <ManagePagination />, driverListElement
+		   <ManagePagination />, document.getElementById('driver-list')
 	 	);
-
-	 	class SearchDriver extends React.Component {
-
-	 	}
 	</script>
 </body>
 </html>
