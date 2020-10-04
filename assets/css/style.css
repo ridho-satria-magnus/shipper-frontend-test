@@ -36,6 +36,9 @@ button, a {
 .dflex {
 	display:flex;
 }
+.flex-wrap-wrap {
+	flex-wrap: wrap;
+}
 .align-center {
 	align-items: center;
 }
@@ -131,6 +134,16 @@ button, a {
 	margin:unset;
 	color: var(--main-color);
 }
+#input-with-search {
+	border: 1px solid black;
+	height: 40px;
+}
+#input-with-search input {
+	height: 100%;
+	padding-right: 15px;
+	border: unset;
+	outline: unset;
+}
 .button {
 	background-color: var(--main-color);
 	border: 1px solid #f00;
@@ -148,6 +161,7 @@ button, a {
 }
 .driver-col {
 	width:25%;
+	min-width: 280px;
 	font-size:var(--text-size-med);
 }
 .driver-card-top {
@@ -209,6 +223,103 @@ button, a {
 	width: 70px;
 	height: 70px;
 }
+.icon-addon {
+	width: 21px;
+	display: inline-block;
+	height: 11px;
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+}
 .icon-close {
-	content:"\2715";
+	background-image: url(../img/plus.png);
+}
+.icon-magnifier {
+	background-image: url(../img/magnifier.svg);
+	width: 40px;
+}
+.icon-white {
+	filter:brightness(0) invert(1);
+}
+
+/*Styling For Mobile*/
+@media(max-width: 767px){
+	/*General Style*/
+	.show-mobile {
+		display: block;
+	}
+	.show-desktop {
+		display: none;
+	}
+	.mobile-100 {
+		flex: 0 0 100%;
+		max-width: 100%;
+	}
+	.mobile-50 {
+		flex: 0 0 50%;
+		max-width: 50%;	
+	}
+	.mt-mobile-0 {
+		margin-top: unset;
+	}
+	
+	/* Body Container */
+	.body-container {
+		width: 100%;
+	}
+
+	/* Driver Management */
+	.button-add-driver {
+		margin-left: unset;margin-top: 15px;
+	}
+	.input-with-icon {
+		margin-top: 15px;
+	}
+
+	/* Driver List */
+	.driver-list-container {
+		display: block;
+		padding-bottom: 60px;
+	}
+	.driver-col {
+		width: 100%;
+	}
+	.driver-top {
+		flex-wrap: wrap;	
+	}
+
+	/* Driver list pagination*/
+	.driver-list-pagination {
+		position: fixed;
+		left: 0;
+		bottom: 0px;
+		background-color: white;
+		box-shadow: -2px 0px 1px 1px #00000047;
+		padding: 7px 30px;
+		width: 100%;
+	}
+}
+@media(min-width: 768px) and (max-width: 1080px){
+	/* Driver Management */
+	.driver-top-right {
+		justify-content:end;
+		max-width: 270px;
+	}
+	.input-with-icon {
+		width: 100%;
+	}
+	.button {
+		margin-left: unset;
+		width:100%;
+	}
+}
+/*Styling For Table & Desktop*/
+@media(min-width: 768px){
+	/*General Style*/
+	.show-mobile {
+		display: none;
+	}
+	.show-desktop{
+		display: block;
+	}	
 }
